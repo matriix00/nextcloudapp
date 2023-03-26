@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nextcloud
+  labels:
+    app: nextcloud
 spec:
   selector:
     matchLabels:
@@ -16,7 +18,7 @@ spec:
         image: nextcloud:24
         
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         env:
           - name: POSTGRES_USER
             valueFrom:  
@@ -24,10 +26,11 @@ spec:
                name: app-configmap
                key: user
           - name: POSTGRES_PASSWORD
-            valueFrom:  
-              secretKeyRef:
-               name: app-secret
-               key: pass
+            value: medo
+            # valueFrom:  
+            #   secretKeyRef:
+            #    name: app-secret
+            #    key: pass
           - name: POSTGRES_DB
             valueFrom:  
               configMapKeyRef:
@@ -37,16 +40,17 @@ spec:
             value: postgres-svc
           - name: REDIS_HOST
             value: redis-svc
-          - name: NEXTCLOUD_HOSTNAME
-            value: localhost
+          # - name: NEXTCLOUD_HOSTNAME
+          #   value: localhost
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: nextcloud-svc
 spec:
+  type: LoadBalancer
   selector:
     app: nextcloud
   ports:
-  - port: 8080
-    targetPort: 8080
+  - port: 80
+    targetPort: 80
