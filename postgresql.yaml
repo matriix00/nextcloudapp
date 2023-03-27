@@ -25,11 +25,11 @@ spec:
                name: app-configmap
                key: user
           - name: POSTGRES_PASSWORD
-            value: medo
-            # valueFrom:  
-            #   secretKeyRef:
-            #    name: app-secret
-            #    key: pass
+            # value: medo
+            valueFrom:  
+              secretKeyRef:
+                name: app-secret
+                key: pass
           - name: POSTGRES_DB
             valueFrom:  
               configMapKeyRef:
