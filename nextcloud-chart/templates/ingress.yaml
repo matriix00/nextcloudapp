@@ -11,7 +11,7 @@ spec:
             - pathType: Prefix
               backend:
                 service:
-                  name: {{ .Values.nextService.name }}
+                  name: {{ .Release.Name }}-{{ .Values.nextService.name }}
                   port:
                     number: {{ .Values.nextService.port }}
               path: /
