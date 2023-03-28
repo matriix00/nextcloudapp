@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.nextcloudName }}-deployment
+  labels:
+    app: {{ .Values.nextcloudLabels.app}}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.nextcloudLabels.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.nextcloudLabels.app }}
+    spec:
+      containers:
+      - name: {{ .Values.nextcloudName }}-container
+        image: {{ .Values.nextCloud.image }}:{{ .Values.nextCloud.tag }}
+        
+        ports:
+        - containerPort: {{ .Values.nextCloud.contport }}
+        env:
+          - name: {{ .Values.data.user }}
+            valueFrom:  
+              configMapKeyRef:
+               name: {{ .Values.configname }}
+               key: user
+          - name: {{ .Values.data.postPass }}
+            value: medo
+            # valueFrom:  
+            #   secretKeyRef:
+            #     name: {{ .Values.secretName }}
+            #     key: pass
+          - name: {{ .Values.data.postdb }}
+            valueFrom:  
+              configMapKeyRef:
+               name: {{ .Values.configname}}
+               key: db
+          - name: {{ .Values.data.posthost }}
+            value: {{ .Values.postService.name }}
+          - name: {{ .Values.data.redishost }}
+            value: {{ .Values.redisService.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.nextService.name }}
+spec:
+  type: {{ .Values.nextService.type }}
+  selector:
+    app: {{ .Values.nextcloudLabels.app }}
+  ports:
+  - port: {{ .Values.nextService.port }}
+    targetPort: {{ .Values.nextCloud.contport }}

@@ -1,0 +1,14 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ .Values.postgreName }}-pv-volume 
+  labels:
+    app: {{ .Values.postgreLabels.app }}
+spec:
+  storageClassName: manual
+  capacity:
+    storage: {{ .Values.persistence.storageSize }} 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data"
