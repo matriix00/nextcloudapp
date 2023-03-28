@@ -6,8 +6,9 @@
 configname: app-configmap
 
 data:
-  user: "POSTGRES_USER"  
+  user: "medo"  
   db: "test"
+  postgreUser: "POSTGRES_USER"
   redishost: "REDIS_HOST"
   posthost: "POSTGRES_HOST"
   postdb: "POSTGRES_DB"
@@ -75,3 +76,7 @@ redisService:
 
 persistence:
   storageSize: 5Gi
+
+
+hostname: app-test1.com
+ingname: example-ing

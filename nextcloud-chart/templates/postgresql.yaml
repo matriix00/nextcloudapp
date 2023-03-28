@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.postgreName }}-deployment
+  name: {{ .Release.Name }}-{{ .Values.postgreName }}-deployment
   labels:
     app: {{ .Values.postgreLabels.app }}
 spec:
@@ -46,7 +46,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.postService.name }}
+  name: {{ .Release.Name }}-{{ .Values.postService.name }}
 spec:
   selector:
     app: {{ .Values.postgreLabels.app }}

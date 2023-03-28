@@ -1,17 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-    name: example-ing
+    name: {{ .Release.Name }}-{{ .Values.ingname }}
 spec:
     ingressClassName: nginx
     rules:
-      - host: omarhola.com
+      - host: {{.Values.hostname }}
         http:
           paths:
             - pathType: Prefix
               backend:
                 service:
-                  name: nextcloud-svc
+                  name: {{ .Values.nextService.name }}
                   port:
-                    number: 80
+                    number: {{ .Values.nextService.port }}
               path: /

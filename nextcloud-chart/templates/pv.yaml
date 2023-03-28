@@ -1,7 +1,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: {{ .Values.postgreName }}-pv-volume 
+  name: {{ .Release.Name }}-{{ .Values.postgreName }}-pv-volume 
   labels:
     app: {{ .Values.postgreLabels.app }}
 spec:

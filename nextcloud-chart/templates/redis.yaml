@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.redisName }}
+  name: {{ .Release.Name }}-{{ .Values.redisName }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -22,11 +22,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.redisService.name}}	
+  name: {{ .Release.Name }}-{{ .Values.redisService.name}}	
 spec:
   selector:
     type: {{ .Values.redisLabels.type }}
   ports:
     - protocol: {{ .Values.redisService.protocol }}
       port: {{ .Values.redisService.port }}
-      targetPort: 6379
+      targetPort: {{ .Values.redisSpec.contport}}

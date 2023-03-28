@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.nextcloudName }}-deployment
+  name: {{ .Release.Name }}-{{ .Values.nextcloudName }}-deployment
   labels:
     app: {{ .Values.nextcloudLabels.app}}
 spec:
@@ -21,7 +21,7 @@ spec:
         ports:
         - containerPort: {{ .Values.nextCloud.contport }}
         env:
-          - name: {{ .Values.data.user }}
+          - name: {{ .Values.data.postgreUser }}
             valueFrom:  
               configMapKeyRef:
                name: {{ .Values.configname }}
@@ -45,9 +45,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.nextService.name }}
+  name: {{ .Release.Name }}-{{ .Values.nextService.name }}
 spec:
-  type: {{ .Values.nextService.type }}
+  type: ClusterIP
   selector:
     app: {{ .Values.nextcloudLabels.app }}
   ports:
