@@ -38,6 +38,7 @@ $ git clone https://github.com/matriix00/django-webapp.git
 
 
 ```bash
+$ cd k8s-config/
 $ helm install release1 nextcloud-chart/
 ```
 * Now u can open you web app using loadbalancer url
