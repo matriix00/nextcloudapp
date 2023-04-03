@@ -19,10 +19,10 @@ spec:
         ports:
         - containerPort: {{ .Values.postgresSpec.contport }}
         env:
-          - name: {{ .Values.data.user }}
+          - name: {{ .Values.data.postgreUser }}
             valueFrom:  
               configMapKeyRef:
-               name: {{ .Values.configname }}
+               name: {{ .Release.Name }}-{{ .Values.configname }}
                key: user
           - name: {{ .Values.data.postPass }}
             value: medo
@@ -33,7 +33,7 @@ spec:
           - name: {{ .Values.data.postdb }}
             valueFrom:  
               configMapKeyRef:
-               name: {{ .Values.configname }}
+               name: {{ .Release.Name }}-{{ .Values.configname }}
                key: db
         volumeMounts:
             - mountPath: /var/lib/postgresql/data
@@ -41,7 +41,7 @@ spec:
       volumes:
         - name: postgredb
           persistentVolumeClaim:
-            claimName: postgres-pv-claim
+            claimName: {{ .Release.Name }}-postgres-pv-claim
 ---
 apiVersion: v1
 kind: Service

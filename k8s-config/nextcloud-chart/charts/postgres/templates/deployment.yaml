@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-postgres
+  labels:
+    {{- include "postlabels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "postlabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "postlabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-postgres-container
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: {{ .Values.image.port }}
+       
+        {{- with .Values.env }}
+       
+        env:
+            {{- with .dbuser }}
+          - name: {{ .name }}
+            valueFrom:  
+              configMapKeyRef:
+               name: {{ $.Release.Name }}-app-configmap
+               key: {{ .value }}
+            {{- end }}
+            {{- with .dbpass }}
+          - name: {{ .name }}
+            value: {{ .value }}
+            # valueFrom:  
+            #   secretKeyRef:
+            #     name: app-secret
+            #     key: pass
+            {{- end }}
+            {{- with .dbname }}
+          - name: {{ .name }}
+            valueFrom:  
+              configMapKeyRef:
+               name: {{ $.Release.Name }}-app-configmap
+               key: {{ .value }}
+            {{- end }}
+
+        {{- end }}   
+        volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+      volumes:
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-postgres-pv-claim

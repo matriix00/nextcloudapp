@@ -1,54 +1,53 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nextcloud
-  labels:
-    app: nextcloud
-spec:
-  selector:
-    matchLabels:
-      app: nextcloud
-  template:
-    metadata:
-      labels:
-        app: nextcloud
-    spec:
-      containers:
-      - name: nextcloud-container
-        image: nextcloud:24
-        
-        ports:
-        - containerPort: 80
-        env:
-          - name: POSTGRES_USER
-            valueFrom:  
-              configMapKeyRef:
-               name: app-configmap
-               key: user
-          - name: POSTGRES_PASSWORD
-            value: medo
-            # valueFrom:  
-            #   secretKeyRef:
-            #     name: app-secret
-            #     key: pass
-          - name: POSTGRES_DB
-            valueFrom:  
-              configMapKeyRef:
-               name: app-configmap
-               key: db
-          - name: POSTGRES_HOST
-            value: postgres-svc
-          - name: REDIS_HOST
-            value: redis-svc
-          # - name: NEXTCLOUD_HOSTNAME
-          #   value: localhost
----
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: nextcloud
+#   labels:
+#     app: nextcloud
+# spec:
+#   selector:
+#     matchLabels:
+#       app: nextcloud
+#   template:
+#     metadata:
+#       labels:
+#         app: nextcloud
+#     spec:
+#       containers:
+#       - name: nextcloud-container
+#         image: nextcloud:24
+#         ports:
+#         - containerPort: 80
+#         env:
+#           - name: POSTGRES_USER
+#             valueFrom:  
+#               configMapKeyRef:
+#                name: app-configmap
+#                key: user
+#           - name: POSTGRES_PASSWORD
+#             value: medo
+#             # valueFrom:  
+#             #   secretKeyRef:
+#             #     name: app-secret
+#             #     key: pass
+#           - name: POSTGRES_DB
+#             valueFrom:  
+#               configMapKeyRef:
+#                name: app-configmap
+#                key: db
+#           - name: POSTGRES_HOST
+#             value: postgres-svc
+#           - name: REDIS_HOST
+#             value: redis-svc
+#           # - name: NEXTCLOUD_HOSTNAME
+#           #   value: localhost
+# ---
 apiVersion: v1
 kind: Service
 metadata:
   name: nextcloud-svc
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: nextcloud
   ports:

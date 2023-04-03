@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-nextcloud
+  labels:
+    {{- include "labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-nextcloud-container
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: {{ .Values.image.port }}
+        
+        {{- with .Values.env }}
+
+        env:
+            {{- with .dbuser }}
+          - name: {{ .name }}
+            valueFrom:  
+              configMapKeyRef:
+               name: {{ $.Release.Name }}-app-configmap
+               key: {{ .value }}
+            {{- end -}}   
+            {{- with .dbpass }}
+          - name: {{ .name }}
+            value: {{ .value }}
+            # valueFrom:  
+            #   secretKeyRef:
+            #     name: app-secret
+            #     key: pass
+            {{- end }}
+            {{- with .dbname }}
+          - name: {{ .name }}
+            valueFrom:  
+              configMapKeyRef:
+               name: {{ $.Release.Name }}-app-configmap
+               key: {{ .value }}
+            {{- end }}
+            {{- with .dbhost }}
+          - name: {{ .name }}
+            value: {{ $.Release.Name }}-postgres-svc
+            {{- end }}
+            {{- with .redishost }}
+          - name: {{ .name }}
+            value: {{ $.Release.Name }}-redis-svc
+            {{- end }}
+        {{- end }}   
+
+

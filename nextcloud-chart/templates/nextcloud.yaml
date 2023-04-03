@@ -24,7 +24,7 @@ spec:
           - name: {{ .Values.data.postgreUser }}
             valueFrom:  
               configMapKeyRef:
-               name: {{ .Values.configname }}
+               name: {{ .Release.Name }}-{{ .Values.configname }}
                key: user
           - name: {{ .Values.data.postPass }}
             value: medo
@@ -35,19 +35,20 @@ spec:
           - name: {{ .Values.data.postdb }}
             valueFrom:  
               configMapKeyRef:
-               name: {{ .Values.configname}}
+               name: {{ .Release.Name }}-{{ .Values.configname}}
                key: db
           - name: {{ .Values.data.posthost }}
-            value: {{ .Values.postService.name }}
+            value: {{ .Release.Name }}-{{ .Values.postService.name }}
           - name: {{ .Values.data.redishost }}
-            value: {{ .Values.redisService.name }}
+            value: {{ .Release.Name }}-{{ .Values.redisService.name }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}-{{ .Values.nextService.name }}
 spec:
-  type: ClusterIP
+  # type: ClusterIP
+  type: LoadBalancer
   selector:
     app: {{ .Values.nextcloudLabels.app }}
   ports:

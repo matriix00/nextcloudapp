@@ -1,0 +1,14 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-postgres-pv-volume 
+  labels:
+    {{- include "postlabels" . | nindent 4 }}
+spec:
+  storageClassName: manual
+  capacity:
+    storage: {{ .Values.storage.size }} 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data"

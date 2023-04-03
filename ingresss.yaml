@@ -46,13 +46,13 @@ metadata:
 spec:
     ingressClassName: nginx
     rules:
-      - host: omarhola.com
+      - host: app-test1.com
         http:
           paths:
             - pathType: Prefix
               backend:
                 service:
-                  name: nextcloud-svc
+                  name: next1-nextcloud-svc
                   port:
                     number: 80
               path: /

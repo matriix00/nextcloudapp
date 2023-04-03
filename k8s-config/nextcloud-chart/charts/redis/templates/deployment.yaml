@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-redis
+  labels: 
+    {{- include "redislabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "redislabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "redislabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-redis-container
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: {{ .Values.image.port }}
+
+
